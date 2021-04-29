@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+//That element comes to React component and are refers to HTML
+type formElement = React.FormEvent<HTMLFormElement>;
+
+interface ITask {
+  name: string,
+  done: boolean
+}
+
+//Return an element
+function App(): JSX.Element {
+
+  const [newTask, setNewTask] = useState<string>("");
+  const [tasks, setTask] = useState<ITask[]>([])
+
+  const handleSubmit = (e: formElement) => {
+    e.preventDefault();
+    addTask(newTask)
+  };
+
+  //Recive a name of a new task
+  const addTask = (name:string) =>{
+    //Copy the new content of tasks and add a new one 
+    const newTasks: ITask[] = [...tasks, {name: name, done: false} ]
+    setTask(newTasks)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" onChange={(e) => setNewTask(e.target.value)} />
+        <button>Save</button>
+      </form>
     </div>
   );
 }
