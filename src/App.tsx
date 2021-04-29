@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from 'react';
 
 //That element comes to React component and are refers to HTML
 type formElement = React.FormEvent<HTMLFormElement>;
@@ -10,15 +10,19 @@ interface ITask {
 
 //Return an element
 function App(): JSX.Element {
-  const [newTask, setNewTask] = useState<string>("");
+  const [newTask, setNewTask] = useState<string>('');
   //List of task
   const [tasks, setTask] = useState<ITask[]>([]);
+  //create a variable to add inside the input
+  const taskInput = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: formElement) => {
     e.preventDefault();
     addTask(newTask);
     //When i send a data, clean the input
-    setNewTask("");
+    setNewTask('');
+    //Then add a new task, focus inside the input
+    taskInput.current?.focus();
   };
 
   //Recive a name of a new task
@@ -38,45 +42,41 @@ function App(): JSX.Element {
     setTask(newTasks);
   };
 
-  const removeTask = (i: number): void =>{
-    const newTasks: ITask[] = [...tasks]
+  const removeTask = (i: number): void => {
+    const newTasks: ITask[] = [...tasks];
     /*of all the tasks I delete a task with the index that they pass me by parameter*/
-    newTasks.splice(i, 1)
-    setTask(newTasks)
-  }
+    newTasks.splice(i, 1);
+    setTask(newTasks);
+  };
 
   return (
-    <div className="container p-4">
-      <div className="row">
-        <div className="col-md-6 offset-md-3">
-          <div className="card">
-            <div className="card-body">
+    <div className='container p-4'>
+      <div className='row'>
+        <div className='col-md-6 offset-md-3'>
+          <div className='card'>
+            <div className='card-body'>
               <form onSubmit={handleSubmit}>
                 <input
-                  type="text"
+                  type='text'
                   onChange={(e) => setNewTask(e.target.value)}
                   value={newTask}
-                  className="form-control"
+                  className='form-control'
+                  ref={taskInput}
                   autoFocus
                 />
-                <button className="btn btn-success btn-block mt-2">Save</button>
+                <button className='btn btn-success btn-block mt-2'>Save</button>
               </form>
             </div>
           </div>
           {tasks.map((t: ITask, i: number) => (
-            <div className="card card-body mt-2" key={i}>
-              <h2 style={{ textDecoration: t.done ? "line-through" : "" }}>
-                {t.name}
-              </h2>
+            <div className='card card-body mt-2' key={i}>
+              <h2 style={{ textDecoration: t.done ? 'line-through' : '' }}>{t.name}</h2>
               <div>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => toggleDoneTask(i)}
-                >
-                  {t.done ? "✓" : "✗"}
+                <button className='btn btn-secondary' onClick={() => toggleDoneTask(i)}>
+                  {t.done ? '✓' : '✗'}
                 </button>
-                <button className="btn btn-danger" onClick = {()=> removeTask(i)}>
-                🗑
+                <button className='btn btn-danger ml-1' onClick={() => removeTask(i)}>
+                  🗑
                 </button>
               </div>
             </div>
